@@ -14,11 +14,13 @@ st.set_option("deprecation.showfileUploaderEncoding", False)
 # define a device and load the model
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-try: 
-    # Load model
+
+@st.cache(allow_output_mutation=True)
+def load_model():
     model = torch.hub.load('ultralytics/yolov5', 'custom', path='weights/best.pt') 
-except: 
-    st.error("Error loading model. Please check if model file exists.")
+    return model
+with st.spinner('Model is being loaded..'):
+    model=load_model()
 
 model.conf = DEFAULT_CONFIDENCE_THRESHOLD  # NMS confidence threshold
 model.iou = DEFAULT_IoU_THRESHOLD  # NMS IoU threshold
