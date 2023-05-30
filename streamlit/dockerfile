@@ -1,0 +1,17 @@
+FROM tiangolo/uvicorn-gunicorn:python3.7
+LABEL maintainer="Roman Bezaev @rbezaev"
+
+RUN mkdir /grassdetect
+WORKDIR /grassdetect
+
+COPY requirements.txt /grassdetect
+
+RUN apt-get update 
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+
+COPY . /grassdetect
+
+EXPOSE 8501
+
+CMD ["streamlit", "run" , "main.py"]
