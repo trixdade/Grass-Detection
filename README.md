@@ -8,11 +8,13 @@ To run the example in a machine running Docker and docker-compose, run:
 To visit the streamlit UI, visit http://localhost:8501
 
 
-\### TO DO
+### TO DO
 
 - [x] streamlit service
+- [ ] save processed images
+- [ ] add progress bar
 - [ ] move model to ONNX/OpenVINO to speed up on CPU (2x-3x speed up)
-- [ ] labels on the second columns
+- [ ] labels in the second column
 - [ ] fastAPI backend
 - [ ] fix ValueError with some images
 - [ ] Unit testing
