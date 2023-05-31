@@ -3,3 +3,9 @@ __pycache__/
 
 # Data from the model
 detected-images
+
+# venv
+.venv
+
+# vs code files
+.vscode
