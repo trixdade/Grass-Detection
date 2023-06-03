@@ -4,6 +4,7 @@ from PIL import Image
 import torch
 from torchvision import transforms as T
 import numpy as np
+import os
 from config import DEFAULT_CONFIDENCE_THRESHOLD, DEFAULT_IoU_THRESHOLD
 
 
@@ -16,8 +17,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    #model = torch.hub.load('ultralytics/yolov5', 'custom', path='weights/best.pt', force_reload=True) 
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='streamlit/weights/best.pt', force_reload=True) 
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='streamlit/weights/best.onnx', force_reload=True) 
     return model
 with st.spinner('Model is being loaded..'):
     model=load_model()
@@ -47,8 +47,18 @@ imgs = [Image.open(image) for image in uploaded_files]
 def show_image(image, caption, labels):
     st.subheader(caption)
     st.image(image, width=640)
+    st.write("Labels:")
     st.write(labels)
     st.write('\n')
+
+
+def save_image(image, name, path):
+    file_path = os.path.join(path, name)
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    with open(file_path, 'wb') as f:
+        image.save(f)
 
 
 # displays a button
@@ -57,7 +67,6 @@ if st.button("Detect objects"):
         st.write("Please upload an image first")
     else:
         file_names = [uploaded_file.name for uploaded_file in uploaded_files]
-        st.write(file_names)
         output = model(imgs, size=640)
         images = output.render()
         for i, detected_image in enumerate(images):
@@ -65,4 +74,5 @@ if st.button("Detect objects"):
             img = transform(detected_image)
             image_labels = output.pandas().xyxy[i].groupby('name').agg({'name':'count'}).rename(columns={'name':'number'})
             show_image(img, file_names[i], image_labels)
+            save_image(img, file_names[i], 'detected-images')
 
