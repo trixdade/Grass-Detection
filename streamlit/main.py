@@ -17,7 +17,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model = torch.hub.load('ultralytics/yolov5', 'custom', path='streamlit/weights/best.onnx', force_reload=True) 
+    model = torch.hub.load('ultralytics/yolov5', 'custom', path='streamlit/weights/best.pt', force_reload=True) 
     return model
 with st.spinner('Model is being loaded..'):
     model=load_model()
